@@ -1,0 +1,26 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Remove index.php from URLs
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+
+# Prevent directory listing
+Options -Indexes
+
+# Security headers
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "SAMEORIGIN"
+Header set X-XSS-Protection "1; mode=block"
+
+# Deny access to sensitive files
+<FilesMatch "\.(env|sql|json)$">
+    Deny from all
+</FilesMatch>
+
+# Disable script execution in upload folder
+<Directory "public/uploads">
+    php_flag engine off
+    AddType text/plain .php .phtml .php3 .php4 .php5 .php6 .shtml .pl .py .jsp .asp .sh .cgi
+</Directory>

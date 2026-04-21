@@ -1,6 +1,5 @@
 {
     "name": "ceetahsg/lost-and-found-system",
     "description": "A modern Lost and Found System for reuniting items with owners",
-    "type": "project",
-    "license": "MIT"
+    "type": "project"
 }

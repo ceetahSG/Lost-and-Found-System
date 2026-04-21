@@ -20,7 +20,7 @@ class Item {
         $this->conn = $db;
     }
 
-    // Post new item
+    // Post new item - FIXED
     public function postItem($user_id, $category, $item_type, $title, $description, $location, $date_lost_found, $color = '', $features = '') {
         $query = "INSERT INTO {$this->table} 
                   (user_id, category, item_type, title, description, location, date_lost_found, color, distinguishing_features, status)
@@ -32,7 +32,8 @@ class Item {
             return ['success' => false, 'message' => 'Database error'];
         }
 
-        $stmt->bind_param("ississss", $user_id, $category, $item_type, $title, $description, $location, $date_lost_found, $color, $features);
+        // FIXED: issssssss = 1 integer + 8 strings = 9 total (matches 9 variables)
+        $stmt->bind_param("issssssss", $user_id, $category, $item_type, $title, $description, $location, $date_lost_found, $color, $features);
 
         if ($stmt->execute()) {
             return ['success' => true, 'message' => 'Item posted successfully', 'item_id' => $this->conn->insert_id];
@@ -74,15 +75,34 @@ class Item {
         }
     }
 
-    // Get all active items with search filters
+    // Get all active items with search filters - FIXED
     public function searchItems($category = '', $item_type = '', $location = '', $status = 'active') {
         $query = "SELECT i.*, u.username, u.profile_picture FROM {$this->table} i 
                   JOIN users u ON i.user_id = u.id WHERE 1=1";
 
-        if ($category) $query .= " AND i.category = ?";
-        if ($item_type) $query .= " AND i.item_type = ?";
-        if ($location) $query .= " AND i.location LIKE ?";
-        if ($status) $query .= " AND i.status = ?";
+        $params = [];
+        $types = '';
+
+        if (!empty($category)) {
+            $query .= " AND i.category = ?";
+            $params[] = $category;
+            $types .= 's';
+        }
+        if (!empty($item_type)) {
+            $query .= " AND i.item_type = ?";
+            $params[] = $item_type;
+            $types .= 's';
+        }
+        if (!empty($location)) {
+            $query .= " AND i.location LIKE ?";
+            $params[] = "%{$location}%";
+            $types .= 's';
+        }
+        if (!empty($status)) {
+            $query .= " AND i.status = ?";
+            $params[] = $status;
+            $types .= 's';
+        }
 
         $query .= " ORDER BY i.date_posted DESC";
 
@@ -92,20 +112,15 @@ class Item {
             return [];
         }
 
-        $params = [];
-        $types = '';
-
-        if ($category) { $params[] = $category; $types .= 's'; }
-        if ($item_type) { $params[] = $item_type; $types .= 's'; }
-        if ($location) { $params[] = "%{$location}%"; $types .= 's'; }
-        if ($status) { $params[] = $status; $types .= 's'; }
-
-        if ($types) {
+        if ($types && count($params) > 0) {
             $stmt->bind_param($types, ...$params);
         }
 
         $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result();
+        $items = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        return $items;
     }
 
     // Get item by ID
@@ -149,7 +164,7 @@ class Item {
         $stmt->execute();
         $result = $stmt->get_result()->fetch_assoc();
 
-        if ($result['user_id'] != $user_id) {
+        if (!$result || $result['user_id'] != $user_id) {
             return ['success' => false, 'message' => 'Unauthorized'];
         }
 
@@ -167,6 +182,10 @@ class Item {
     // Find matching items
     public function findMatches($item_id) {
         $item = $this->getItemById($item_id);
+        if (!$item) {
+            return [];
+        }
+        
         $opposite_type = ($item['item_type'] == 'lost') ? 'found' : 'lost';
 
         $query = "SELECT * FROM {$this->table} WHERE item_type = ? AND category = ? 

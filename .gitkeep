@@ -1,0 +1,4 @@
+# Create folders with .gitkeep
+echo "# Uploads" > public/uploads/.gitkeep
+echo "# Profiles" > public/uploads/profiles/.gitkeep
+echo "# Items" > public/uploads/items/.gitkeep

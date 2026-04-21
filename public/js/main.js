@@ -45,6 +45,8 @@ function formatDate(dateString) {
  * Format relative time
  */
 function getRelativeTime(dateString) {
+    if (!dateString) return 'Recently';
+
     const date = new Date(dateString);
     const now = new Date();
     const diffMs = now - date;
@@ -53,10 +55,12 @@ function getRelativeTime(dateString) {
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffSecs < 60) return diffSecs + ' seconds ago';
-    if (diffMins < 60) return diffMins + ' minutes ago';
-    if (diffHours < 24) return diffHours + ' hours ago';
-    if (diffDays < 7) return diffDays + ' days ago';
+    // If time is in the future or less than 0, return 'just now'
+    if (diffSecs < 0) return 'just now';
+    if (diffSecs < 60) return 'just now';
+    if (diffMins < 60) return diffMins + ' minute' + (diffMins > 1 ? 's' : '') + ' ago';
+    if (diffHours < 24) return diffHours + ' hour' + (diffHours > 1 ? 's' : '') + ' ago';
+    if (diffDays < 7) return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
     
     return formatDate(dateString);
 }

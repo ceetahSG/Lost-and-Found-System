@@ -1,18 +1,28 @@
 <?php
-
 // Start session
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Include config
-require_once __DIR__ . '/../config/database.php';
+// Determine environment and load appropriate config
+if (getenv('RAILWAY_ENVIRONMENT')) {
+    // Production on Railway
+    require_once __DIR__ . '/../config/database-railway.php';
+} else {
+    // Local development
+    require_once __DIR__ . '/../config/database.php';
+}
 
 // Include classes
-require_once __DIR__ . '/../classes/User.php';
-require_once __DIR__ . '/../classes/Item.php';
-require_once __DIR__ . '/../classes/Message.php';
-require_once __DIR__ . '/../classes/Admin.php';
+$user_class = dirname(__DIR__) . '/classes/User.php';
+$item_class = dirname(__DIR__) . '/classes/Item.php';
+$message_class = dirname(__DIR__) . '/classes/Message.php';
+$admin_class = dirname(__DIR__) . '/classes/Admin.php';
+
+if (file_exists($user_class)) require_once $user_class;
+if (file_exists($item_class)) require_once $item_class;
+if (file_exists($message_class)) require_once $message_class;
+if (file_exists($admin_class)) require_once $admin_class;
 
 // Check if user is logged in
 function isLoggedIn() {
@@ -47,25 +57,56 @@ function escape($data) {
 
 // Get user by ID
 function getUserData($user_id, $db) {
+    if (!$user_id || !isset($db)) return null;
     $user = new User($db);
     return $user->getProfile($user_id);
 }
 
 // Format date
 function formatDate($date) {
-    return date('M d, Y', strtotime($date));
+    if (empty($date)) return '';
+    $timestamp = strtotime($date);
+    if ($timestamp === false) return '';
+    return date('M d, Y', $timestamp);
 }
 
-// Get relative time (e.g., "2 hours ago")
+// Get relative time (e.g., "2 hours ago") - FIXED
 function getRelativeTime($date) {
-    $time = strtotime($date);
-    $diff = time() - $time;
+    if (empty($date)) {
+        return 'Recently';
+    }
 
-    if ($diff < 60) return $diff . ' seconds ago';
-    elseif ($diff < 3600) return floor($diff / 60) . ' minutes ago';
-    elseif ($diff < 86400) return floor($diff / 3600) . ' hours ago';
-    elseif ($diff < 604800) return floor($diff / 86400) . ' days ago';
-    else return date('M d, Y', $time);
+    $time = strtotime($date);
+    
+    if ($time === false) {
+        return 'Recently';
+    }
+
+    $now = time();
+    $diff = $now - $time;
+
+    // If time is in the future
+    if ($diff < 0) {
+        return 'just now';
+    }
+
+    if ($diff < 60) {
+        return 'just now';
+    } elseif ($diff < 120) {
+        return '1 minute ago';
+    } elseif ($diff < 3600) {
+        return floor($diff / 60) . ' minutes ago';
+    } elseif ($diff < 7200) {
+        return '1 hour ago';
+    } elseif ($diff < 86400) {
+        return floor($diff / 3600) . ' hours ago';
+    } elseif ($diff < 172800) {
+        return '1 day ago';
+    } elseif ($diff < 604800) {
+        return floor($diff / 86400) . ' days ago';
+    } else {
+        return date('M d, Y', $time);
+    }
 }
 
 // Validate email
@@ -79,6 +120,11 @@ function validatePassword($password) {
     if (!preg_match('/[A-Z]/', $password)) return false;
     if (!preg_match('/[0-9]/', $password)) return false;
     return true;
+}
+
+// Validate username
+function validateUsername($username) {
+    return strlen($username) >= 3 && preg_match('/^[a-zA-Z0-9_-]+$/', $username);
 }
 
 // CSRF token generation

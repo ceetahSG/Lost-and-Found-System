@@ -1,0 +1,43 @@
+# Environment files
+.env
+.env.local
+.env*.local
+config/database.php
+
+# System files
+.DS_Store
+Thumbs.db
+*.log
+*.pid
+
+# PHP
+vendor/
+composer.lock
+
+# Uploads (keep directory structure)
+public/uploads/*
+!public/uploads/.gitkeep
+!public/uploads/profiles/.gitkeep
+!public/uploads/items/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# OS
+.AppleDouble
+._*
+.atemptfile
+
+# Misc
+.cache/
+.tmp/
+tmp/

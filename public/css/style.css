@@ -1,0 +1,769 @@
+/* ===========================
+   BASE STYLES & RESET
+   =========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* ===========================
+   CONTAINER
+   =========================== */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* ===========================
+   TYPOGRAPHY
+   =========================== */
+
+h1 {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+h2 {
+    font-size: clamp(1.25rem, 4vw, 2rem);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+h3 {
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+}
+
+h4, h5, h6 {
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+p {
+    margin-bottom: 0.5rem;
+}
+
+a {
+    color: #2563eb;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #1d4ed8;
+}
+
+/* ===========================
+   BUTTONS
+   =========================== */
+
+button, .btn {
+    transition: all 0.3s ease;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover, .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active, .btn:active {
+    transform: translateY(0);
+}
+
+/* Button sizes */
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+}
+
+/* ===========================
+   FORMS
+   =========================== */
+
+input, textarea, select {
+    font-family: inherit;
+    font-size: 16px;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #9ca3af;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* ===========================
+   CARDS
+   =========================== */
+
+.card {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+}
+
+.card-header {
+    padding: 1.5rem;
+    background-color: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-footer {
+    padding: 1.5rem;
+    background-color: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ===========================
+   GRID & LAYOUT
+   =========================== */
+
+.grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-4 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+/* Responsive Grid */
+@media (min-width: 640px) {
+    .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .grid-cols-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    
+    .grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* Flexbox utilities */
+.flex {
+    display: flex;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+
+/* ===========================
+   BADGE
+   =========================== */
+
+.badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-blue {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-red {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-green {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.badge-yellow {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+/* ===========================
+   ALERTS & MESSAGES
+   =========================== */
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.375rem;
+    border-left: 4px solid;
+    animation: slideIn 0.3s ease;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    border-color: #dc2626;
+    color: #991b1b;
+}
+
+.alert-success {
+    background-color: #dcfce7;
+    border-color: #16a34a;
+    color: #15803d;
+}
+
+.alert-warning {
+    background-color: #fef3c7;
+    border-color: #eab308;
+    color: #92400e;
+}
+
+.alert-info {
+    background-color: #dbeafe;
+    border-color: #2563eb;
+    color: #1e40af;
+}
+
+/* ===========================
+   TABLES
+   =========================== */
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+    background-color: #f3f4f6;
+    font-weight: 600;
+    color: #374151;
+}
+
+tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+tr:hover {
+    background-color: #f3f4f6;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+    table {
+        font-size: 0.875rem;
+    }
+    
+    th, td {
+        padding: 0.5rem;
+    }
+}
+
+/* ===========================
+   NAVBAR
+   =========================== */
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #2563eb;
+}
+
+/* ===========================
+   FOOTER
+   =========================== */
+
+footer {
+    background-color: #1f2937;
+    color: white;
+    padding: 2rem 1rem 1rem;
+    margin-top: 3rem;
+}
+
+footer .container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    footer .container {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+footer a {
+    color: #9ca3af;
+}
+
+footer a:hover {
+    color: white;
+}
+
+footer h4 {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+/* ===========================
+   IMAGES & MEDIA
+   =========================== */
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.img-responsive {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.img-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* ===========================
+   SPACING UTILITIES
+   =========================== */
+
+.m-0 { margin: 0; }
+.m-1 { margin: 0.25rem; }
+.m-2 { margin: 0.5rem; }
+.m-3 { margin: 0.75rem; }
+.m-4 { margin: 1rem; }
+.m-6 { margin: 1.5rem; }
+.m-8 { margin: 2rem; }
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-6 { margin-top: 1.5rem; }
+.mt-8 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-8 { margin-bottom: 2rem; }
+
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 0.75rem; }
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+
+/* ===========================
+   TEXT UTILITIES
+   =========================== */
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-bold {
+    font-weight: 700;
+}
+
+.text-italic {
+    font-style: italic;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.text-lowercase {
+    text-transform: lowercase;
+}
+
+.text-capitalize {
+    text-transform: capitalize;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+}
+
+.text-3xl {
+    font-size: 1.875rem;
+}
+
+.text-4xl {
+    font-size: 2.25rem;
+}
+
+.text-gray-500 {
+    color: #6b7280;
+}
+
+.text-gray-600 {
+    color: #4b5563;
+}
+
+.text-white {
+    color: white;
+}
+
+/* ===========================
+   ANIMATIONS
+   =========================== */
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.animate-slide-in {
+    animation: slideIn 0.3s ease forwards;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2563eb;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* ===========================
+   UTILITY DISPLAY
+   =========================== */
+
+.hidden {
+    display: none !important;
+}
+
+.block {
+    display: block !important;
+}
+
+.inline-block {
+    display: inline-block !important;
+}
+
+.flex {
+    display: flex !important;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.w-auto {
+    width: auto;
+}
+
+.min-w-44 {
+    min-width: 11rem;
+}
+
+/* ===========================
+   RESPONSIVE UTILITIES
+   =========================== */
+
+/* Mobile-first approach */
+@media (max-width: 640px) {
+    html {
+        font-size: 15px;
+    }
+    
+    /* Better button handling on mobile */
+    button, .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Better form spacing */
+    input, textarea, select {
+        margin-bottom: 0.75rem;
+    }
+    
+    /* Reduce padding on mobile */
+    .p-6 {
+        padding: 1rem;
+    }
+    
+    .px-6 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .py-6 {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    
+    /* Better card spacing */
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    /* Adjust grid on mobile */
+    .grid {
+        gap: 1rem;
+    }
+    
+    /* Hide desktop elements */
+    .hidden-mobile {
+        display: none;
+    }
+}
+
+/* Tablet and up */
+@media (min-width: 640px) {
+    button, .btn {
+        width: auto;
+    }
+    
+    input, textarea, select {
+        margin-bottom: 0;
+    }
+}
+
+/* ===========================
+   MOBILE SPECIFIC TWEAKS
+   =========================== */
+
+@media (max-width: 768px) {
+    /* Full width cards */
+    .card {
+        width: 100%;
+    }
+    
+    /* Better image sizing */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    /* Responsive typography */
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.25rem;
+    }
+    
+    /* Better table scrolling */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Mobile menu styling */
+    .mobile-only {
+        display: block;
+    }
+    
+    /* Flex direction for mobile */
+    .flex-col-mobile {
+        flex-direction: column;
+    }
+}
+
+/* Desktop and up */
+@media (min-width: 1024px) {
+    .mobile-only {
+        display: none;
+    }
+}
+
+/* ===========================
+   PRINT STYLES
+   =========================== */
+
+@media print {
+    nav, footer {
+        display: none;
+    }
+    
+    .no-print {
+        display: none;
+    }
+    
+    body {
+        background-color: white;
+    }
+}
+
+/* ===========================
+   LANDSCAPE MODE FIXES
+   =========================== */
+
+@media (max-height: 500px) {
+    nav {
+        padding: 0.5rem 0;
+    }
+    
+    button, .btn {
+        padding: 0.5rem 1rem;
+        min-height: 40px;
+    }
+}

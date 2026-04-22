@@ -156,28 +156,33 @@ class Item {
     }
 
     // Delete item
-    public function deleteItem($item_id, $user_id) {
-        // Check ownership
-        $query = "SELECT user_id FROM {$this->table} WHERE id = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $item_id);
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_assoc();
+   public function deleteItem($item_id, $user_id) {
+    // Check ownership
+    $query = "SELECT user_id FROM {$this->table} WHERE id = ?";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param("i", $item_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
 
-        if (!$result || $result['user_id'] != $user_id) {
-            return ['success' => false, 'message' => 'Unauthorized'];
-        }
-
-        $query = "DELETE FROM {$this->table} WHERE id = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $item_id);
-
-        if ($stmt->execute()) {
-            return ['success' => true, 'message' => 'Item deleted'];
-        } else {
-            return ['success' => false, 'message' => 'Delete failed'];
-        }
+    if (!$result || $result['user_id'] != $user_id) {
+        return ['success' => false, 'message' => 'Unauthorized'];
     }
+
+    // Delete related messages first
+    $stmt = $this->conn->prepare("DELETE FROM messages WHERE item_id = ?");
+    $stmt->bind_param("i", $item_id);
+    $stmt->execute();
+
+    // Delete item
+    $stmt = $this->conn->prepare("DELETE FROM {$this->table} WHERE id = ?");
+    $stmt->bind_param("i", $item_id);
+
+    if ($stmt->execute()) {
+        return ['success' => true, 'message' => 'Item deleted'];
+    } else {
+        return ['success' => false, 'message' => $this->conn->error];
+    }
+}
 
     // Find matching items
     public function findMatches($item_id) {

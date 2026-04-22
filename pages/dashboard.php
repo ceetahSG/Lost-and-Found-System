@@ -24,6 +24,18 @@ $resolved_items = array_filter($user_items, fn($i) => $i['status'] == 'resolved'
         <h1 class="text-4xl font-bold mb-2">Welcome, <?php echo escape($user_data['full_name']); ?>!</h1>
         <p class="text-gray-600">Manage your lost and found items here</p>
     </div>
+    <!-- Add this right after the welcome section div -->
+<?php if (!empty($_GET['msg']) && $_GET['msg'] == 'deleted'): ?>
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+        Item deleted successfully.
+    </div>
+<?php endif; ?>
+
+<?php if (!empty($_GET['err'])): ?>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        Error: <?php echo escape($_GET['err']); ?>
+    </div>
+<?php endif; ?>
 
     <!-- Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">

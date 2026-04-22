@@ -9,12 +9,12 @@ if ($item_id) {
     $result = $item->deleteItem($item_id, $_SESSION['user_id']);
     
     if ($result['success']) {
-        header('Location: ' . BASE_URL . 'pages/dashboard.php?msg=deleted');
+        header('Location: ' . BASE_URL . 'dashboard.php?msg=deleted');
     } else {
-        header('Location: ' . BASE_URL . 'pages/dashboard.php?err=' . urlencode($result['message']));
+        header('Location: ' . BASE_URL . 'dashboard.php?err=' . urlencode($result['message']));
     }
 } else {
-    header('Location: ' . BASE_URL . 'pages/dashboard.php');
+    header('Location: ' . BASE_URL . 'dashboard.php');
 }
 exit;
 ?>

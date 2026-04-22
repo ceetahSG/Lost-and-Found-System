@@ -7,45 +7,14 @@ $message = new Message($conn);
 $inbox = $message->getInbox($_SESSION['user_id']);
 $unread_count = $message->getUnreadCount($_SESSION['user_id']);
 
-// Mark message as read if viewing conversation
-if (isset($_GET['from'])) {
-    $from_user = (int)$_GET['from'];
-    $conversation = $message->getConversation($_SESSION['user_id'], $from_user);
+$viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
+$conversation = [];
+
+if ($viewing_conversation > 0) {
+    $conversation = $message->getConversation($_SESSION['user_id'], $viewing_conversation);
     foreach ($conversation as $msg) {
         if ($msg['receiver_id'] == $_SESSION['user_id'] && !$msg['is_read']) {
             $message->markAsRead($msg['id']);
-        }
-    }
-}
-
-// Handle sending reply - FIXED (No Subject Required)
-$error_msg = '';
-$success_msg = '';
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_reply'])) {
-    if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
-        $error_msg = 'Invalid security token';
-    } else {
-        $receiver_id = (int)($_POST['receiver_id'] ?? 0);
-        $body = trim($_POST['body'] ?? '');
-        $subject = 'Reply'; // Default subject - not shown to user
-
-        if (empty($body)) {
-            $error_msg = 'Message cannot be empty';
-        } elseif ($receiver_id <= 0) {
-            $error_msg = 'Invalid recipient';
-        } else {
-            $result = $message->sendMessage($_SESSION['user_id'], $receiver_id, $subject, $body);
-            
-            if ($result['success']) {
-                $success_msg = 'Message sent successfully!';
-                // Refresh conversation
-                $conversation = $message->getConversation($_SESSION['user_id'], $receiver_id);
-                // Clear the form
-                $_POST['body'] = '';
-            } else {
-                $error_msg = $result['message'];
-            }
         }
     }
 }
@@ -58,8 +27,6 @@ foreach ($inbox as $msg) {
         $conversations[$key] = $msg;
     }
 }
-
-$viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
 ?>
 
 <div class="container mx-auto px-4 py-6 md:py-12">
@@ -85,7 +52,7 @@ $viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
                                class="block p-4 hover:bg-gray-50 transition <?php echo $viewing_conversation == $conv['sender_id'] ? 'bg-blue-50 border-l-4 border-blue-600' : ''; ?>">
                                 <div class="flex items-center gap-3">
                                     <?php if (!empty($conv['profile_picture'])): ?>
-                                        <img src="<?php echo BASE_URL . 'public/uploads/' . escape($conv['profile_picture']); ?>" 
+                                        <img src="<?php echo BASE_URL . 'public/uploads/' . escape($conv['profile_picture']); ?>"
                                              alt="User" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
                                     <?php else: ?>
                                         <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
@@ -115,8 +82,7 @@ $viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
         <!-- Conversation View -->
         <div class="lg:col-span-2">
             <?php if ($viewing_conversation > 0): ?>
-                <?php 
-                $conversation = $message->getConversation($_SESSION['user_id'], $viewing_conversation);
+                <?php
                 $other_user = new User($conn);
                 $other_user_data = $other_user->getProfile($viewing_conversation);
                 ?>
@@ -126,7 +92,7 @@ $viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
                     <div class="bg-blue-600 text-white px-4 md:px-6 py-3 md:py-4 border-b flex-shrink-0">
                         <div class="flex items-center gap-3">
                             <?php if (!empty($other_user_data['profile_picture'])): ?>
-                                <img src="<?php echo BASE_URL . 'public/uploads/' . escape($other_user_data['profile_picture']); ?>" 
+                                <img src="<?php echo BASE_URL . 'public/uploads/' . escape($other_user_data['profile_picture']); ?>"
                                      alt="User" class="w-10 h-10 rounded-full object-cover">
                             <?php else: ?>
                                 <div class="w-10 h-10 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold text-sm">
@@ -141,22 +107,10 @@ $viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
                     </div>
 
                     <!-- Messages -->
-                    <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
-                        <?php if (!empty($error_msg)): ?>
-                            <div class="bg-red-100 border border-red-400 text-red-700 px-3 md:px-4 py-2 md:py-3 rounded text-sm">
-                                <i class="fas fa-exclamation-circle mr-2"></i> <?php echo escape($error_msg); ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if (!empty($success_msg)): ?>
-                            <div class="bg-green-100 border border-green-400 text-green-700 px-3 md:px-4 py-2 md:py-3 rounded text-sm">
-                                <i class="fas fa-check-circle mr-2"></i> <?php echo escape($success_msg); ?>
-                            </div>
-                        <?php endif; ?>
-
+                    <div id="chat-box" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
                         <?php if (count($conversation) > 0): ?>
                             <?php foreach ($conversation as $msg): ?>
-                                <div class="<?php echo $msg['sender_id'] == $_SESSION['user_id'] ? 'text-right' : 'text-left'; ?>">
+                                <div class="<?php echo $msg['sender_id'] == $_SESSION['user_id'] ? 'text-right' : 'text-left'; ?>" data-msg-id="<?php echo $msg['id']; ?>">
                                     <div class="inline-block max-w-xs px-4 py-2 rounded-lg <?php echo $msg['sender_id'] == $_SESSION['user_id'] ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'; ?>">
                                         <p class="text-sm"><?php echo escape($msg['body']); ?></p>
                                         <p class="text-xs opacity-70 mt-1"><?php echo formatDate($msg['created_at']); ?></p>
@@ -165,29 +119,24 @@ $viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="text-center text-gray-500 py-6">
-                                No messages in this conversation. Start by sending a message!
+                                No messages yet. Start the conversation!
                             </div>
                         <?php endif; ?>
                     </div>
 
-                    <!-- Reply Form - NO SUBJECT FIELD -->
+                    <!-- Reply Form - AJAX -->
                     <div class="border-t p-3 md:p-4 bg-gray-50 flex-shrink-0">
-                        <form method="POST" class="space-y-2">
-                            <?php csrfField(); ?>
-                            <input type="hidden" name="send_reply" value="1">
-                            <input type="hidden" name="receiver_id" value="<?php echo $viewing_conversation; ?>">
-                            
-                            <div>
-                                <textarea name="body" placeholder="Type your message..." required
-                                          class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 h-20 md:h-24 text-sm md:text-base resize-none"><?php echo isset($_POST['body']) ? escape($_POST['body']) : ''; ?></textarea>
-                            </div>
-
-                            <button type="submit" class="w-full bg-blue-600 text-white py-2 md:py-3 rounded-lg hover:bg-blue-700 font-bold transition text-sm md:text-base">
-                                <i class="fas fa-paper-plane mr-2"></i> Send Message
+                        <div id="msg-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded text-sm mb-2"></div>
+                        <div class="flex gap-2">
+                            <textarea id="msg-input" placeholder="Type your message..."
+                                      class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 h-12 text-sm resize-none"></textarea>
+                            <button id="msg-send" class="bg-blue-600 text-white px-4 rounded-lg hover:bg-blue-700 font-bold transition text-sm flex-shrink-0">
+                                <i class="fas fa-paper-plane"></i>
                             </button>
-                        </form>
+                        </div>
                     </div>
                 </div>
+
             <?php else: ?>
                 <div class="bg-white rounded-lg shadow-lg p-6 md:p-12 text-center h-96 md:h-full flex items-center justify-center">
                     <div>
@@ -200,5 +149,95 @@ $viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
         </div>
     </div>
 </div>
+
+<script>
+<?php if ($viewing_conversation > 0): ?>
+const OTHER_USER = <?php echo $viewing_conversation; ?>;
+const CURRENT_USER = <?php echo $_SESSION['user_id']; ?>;
+const BASE = '<?php echo BASE_URL; ?>';
+const CSRF = '<?php echo generateCSRFToken(); ?>';
+
+let lastId = <?php echo !empty($conversation) ? max(array_column($conversation, 'id')) : 0; ?>;
+
+const chatBox = document.getElementById('chat-box');
+
+function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderMessage(msg) {
+    const isMine = msg.sender_id == CURRENT_USER;
+    const div = document.createElement('div');
+    div.className = isMine ? 'text-right' : 'text-left';
+    div.dataset.msgId = msg.id;
+    div.innerHTML = `
+        <div class="inline-block max-w-xs px-4 py-2 rounded-lg ${isMine ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}">
+            <p class="text-sm">${escapeHtml(msg.body)}</p>
+            <p class="text-xs opacity-70 mt-1">${msg.created_at}</p>
+        </div>`;
+    return div;
+}
+
+function scrollBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+scrollBottom();
+
+async function pollMessages() {
+    try {
+        const res = await fetch(`${BASE}get-messages.php?with=${OTHER_USER}&last_id=${lastId}`);
+        const msgs = await res.json();
+        if (msgs.length > 0) {
+            msgs.forEach(msg => {
+                chatBox.appendChild(renderMessage(msg));
+                lastId = Math.max(lastId, parseInt(msg.id));
+            });
+            scrollBottom();
+        }
+    } catch(e) {}
+}
+
+setInterval(pollMessages, 3000);
+
+async function sendMessage() {
+    const input = document.getElementById('msg-input');
+    const body = input.value.trim();
+    if (!body) return;
+
+    const btn = document.getElementById('msg-send');
+    btn.disabled = true;
+
+    const form = new FormData();
+    form.append('receiver_id', OTHER_USER);
+    form.append('body', body);
+    form.append('csrf_token', CSRF);
+
+    try {
+        const res = await fetch(`${BASE}send-message.php`, { method: 'POST', body: form });
+        const data = await res.json();
+        if (data.success) {
+            input.value = '';
+            await pollMessages();
+        } else {
+            const err = document.getElementById('msg-error');
+            err.textContent = data.message;
+            err.classList.remove('hidden');
+            setTimeout(() => err.classList.add('hidden'), 3000);
+        }
+    } catch(e) {}
+
+    btn.disabled = false;
+    input.focus();
+}
+
+document.getElementById('msg-send').addEventListener('click', sendMessage);
+document.getElementById('msg-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+<?php endif; ?>
+</script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

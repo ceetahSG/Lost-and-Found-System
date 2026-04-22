@@ -133,7 +133,7 @@ $resolved_items = array_filter($user_items, fn($i) => $i['status'] == 'resolved'
                                        class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">View</a>
                                     <a href="<?php echo BASE_URL; ?>edit-item.php?id=<?php echo $item_data['id']; ?>" 
                                        class="bg-yellow-600 text-white px-3 py-1 rounded text-sm hover:bg-yellow-700">Edit</a>
-                                    <a href="<?php echo BASE_URL; ?>api/delete-item.php?id=<?php echo $item_data['id']; ?>" 
+                                    <a href="<?php echo BASE_URL; ?>api/delete-item.php?id=<?php echo $item_data['id']; ?>"
                                        class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
                                        onclick="return confirm('Are you sure?');">Delete</a>
                                 </div>

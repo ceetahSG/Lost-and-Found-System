@@ -1,6 +1,5 @@
 <?php
-$page_title = 'Profile';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../includes/functions.php';
 requireLogin();
 
 $user = new User($conn);
@@ -41,6 +40,9 @@ if (!empty($_FILES['profile_picture']['name'])) {
         $error = $upload_result['message'];
     }
 }
+
+$page_title = 'Profile';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container mx-auto px-4 py-12 max-w-2xl">
@@ -63,7 +65,7 @@ if (!empty($_FILES['profile_picture']['name'])) {
             <h3 class="text-xl font-bold mb-4">Profile Picture</h3>
             <div class="flex items-center gap-6">
                 <?php if (!empty($user_data['profile_picture'])): ?>
-                    <img src="<?php echo BASE_URL . 'public/uploads/' . escape($user_data['profile_picture']); ?>" 
+                    <img src="<?php echo BASE_URL . 'uploads/' . escape($user_data['profile_picture']); ?>" 
                          alt="Profile" class="w-24 h-24 rounded-full object-cover">
                 <?php else: ?>
                     <div class="w-24 h-24 rounded-full bg-blue-600 text-white flex items-center justify-center text-3xl font-bold">
@@ -133,4 +135,4 @@ if (!empty($_FILES['profile_picture']['name'])) {
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

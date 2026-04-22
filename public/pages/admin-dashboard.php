@@ -1,6 +1,5 @@
 <?php
-$page_title = 'Admin Dashboard';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../includes/functions.php';
 requireAdmin();
 
 $admin = new Admin($conn);
@@ -30,6 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
+
+$page_title = 'Admin Dashboard';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container mx-auto px-4 py-12">
@@ -178,4 +180,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

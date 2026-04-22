@@ -31,7 +31,7 @@
 </footer>
 
 <!-- Scripts -->
-<script src="<?php echo BASE_URL; ?>public/js/main.js"></script>
-<script src="<?php echo BASE_URL; ?>public/js/validation.js"></script>
+<script src="<?php echo BASE_URL; ?>js/main.js"></script>
+<script src="<?php echo BASE_URL; ?>js/validation.js"></script>
 
 </html>

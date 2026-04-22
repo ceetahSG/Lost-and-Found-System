@@ -1,6 +1,5 @@
 <?php
-$page_title = 'Dashboard';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../includes/functions.php';
 requireLogin();
 
 $user = new User($conn);
@@ -16,9 +15,32 @@ $unread_count = $message->getUnreadCount($_SESSION['user_id']);
 $active_items = array_filter($user_items, fn($i) => $i['status'] == 'active');
 $claimed_items = array_filter($user_items, fn($i) => $i['status'] == 'claimed');
 $resolved_items = array_filter($user_items, fn($i) => $i['status'] == 'resolved');
+
+// Flash messages
+$flash_msg = '';
+if (isset($_GET['msg'])) {
+    if ($_GET['msg'] === 'deleted') $flash_msg = 'Item deleted successfully.';
+    if ($_GET['msg'] === 'posted')  $flash_msg = 'Item posted successfully!';
+}
+$flash_err = !empty($_GET['err']) ? urldecode($_GET['err']) : '';
+
+$page_title = 'Dashboard';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container mx-auto px-4 py-12">
+    <!-- Flash messages -->
+    <?php if (!empty($flash_msg)): ?>
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            <i class="fas fa-check-circle"></i> <?php echo escape($flash_msg); ?>
+        </div>
+    <?php endif; ?>
+    <?php if (!empty($flash_err)): ?>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <i class="fas fa-exclamation-circle"></i> <?php echo escape($flash_err); ?>
+        </div>
+    <?php endif; ?>
+
     <!-- Welcome Section -->
     <div class="mb-8">
         <h1 class="text-4xl font-bold mb-2">Welcome, <?php echo escape($user_data['full_name']); ?>!</h1>
@@ -94,7 +116,7 @@ $resolved_items = array_filter($user_items, fn($i) => $i['status'] == 'resolved'
                             <div class="flex items-start justify-between">
                                 <div class="flex items-start gap-4 flex-1">
                                     <?php if (!empty($item_data['image_url'])): ?>
-                                        <img src="<?php echo BASE_URL . 'public/uploads/' . escape($item_data['image_url']); ?>" 
+                                        <img src="<?php echo BASE_URL . 'uploads/' . escape($item_data['image_url']); ?>" 
                                              alt="Item" class="w-20 h-20 object-cover rounded">
                                     <?php else: ?>
                                         <div class="w-20 h-20 bg-gray-300 flex items-center justify-center rounded">
@@ -194,4 +216,4 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 </script>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

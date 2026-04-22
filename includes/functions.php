@@ -5,13 +5,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Determine environment and load appropriate config
-if (getenv('RAILWAY_ENVIRONMENT')) {
-    // Production on Railway
-    require_once __DIR__ . '/../config/database-railway.php';
-} else {
-    // Local development
-    require_once __DIR__ . '/../config/database.php';
-}
+// database-railway.php handles both Railway and local development
+require_once __DIR__ . '/../config/database-railway.php';
 
 // Include classes
 $user_class = dirname(__DIR__) . '/classes/User.php';

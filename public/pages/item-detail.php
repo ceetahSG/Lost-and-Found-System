@@ -1,6 +1,5 @@
 <?php
-$page_title = 'Item Details';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../includes/functions.php';
 
 $item_id = $_GET['id'] ?? 0;
 
@@ -39,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_message'])) {
         } else {
             $message = new Message($conn);
             $result = $message->sendMessage($_SESSION['user_id'], $item_data['user_id'], $subject, $body, $item_id);
-            
+
             if ($result['success']) {
                 $success = 'Message sent successfully!';
             } else {
@@ -48,6 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_message'])) {
         }
     }
 }
+
+$page_title = 'Item Details';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container mx-auto px-4 py-12">
@@ -57,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_message'])) {
             <!-- Item Image -->
             <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
                 <?php if (!empty($item_data['image_url'])): ?>
-                    <img src="<?php echo BASE_URL . 'public/uploads/' . escape($item_data['image_url']); ?>" 
+                    <img src="<?php echo BASE_URL . 'uploads/' . escape($item_data['image_url']); ?>" 
                          alt="Item" class="w-full h-96 object-cover">
                 <?php else: ?>
                     <div class="w-full h-96 bg-gray-300 flex items-center justify-center">
@@ -162,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_message'])) {
 
                 <div class="flex items-center mb-4">
                     <?php if (!empty($item_data['profile_picture'])): ?>
-                        <img src="<?php echo BASE_URL . 'public/uploads/' . escape($item_data['profile_picture']); ?>" 
+                        <img src="<?php echo BASE_URL . 'uploads/' . escape($item_data['profile_picture']); ?>" 
                              alt="User" class="w-12 h-12 rounded-full mr-3 object-cover">
                     <?php else: ?>
                         <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center mr-3 font-bold">
@@ -231,4 +233,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_message'])) {
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

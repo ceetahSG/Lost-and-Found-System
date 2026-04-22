@@ -1,6 +1,8 @@
 <?php
+require_once __DIR__ . '/../../includes/functions.php';
+
 $page_title = 'Search Items';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../includes/header.php';
 
 $category = $_GET['category'] ?? '';
 $item_type = $_GET['item_type'] ?? '';
@@ -85,7 +87,7 @@ $item_types = ['lost', 'found'];
             <?php foreach ($items as $item_data): ?>
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition transform hover:-translate-y-1">
                     <?php if (!empty($item_data['image_url'])): ?>
-                        <img src="<?php echo BASE_URL . 'public/uploads/' . escape($item_data['image_url']); ?>" 
+                        <img src="<?php echo BASE_URL . 'uploads/' . escape($item_data['image_url']); ?>" 
                              alt="Item" class="w-full h-40 md:h-48 object-cover">
                     <?php else: ?>
                         <div class="w-full h-40 md:h-48 bg-gray-300 flex items-center justify-center">
@@ -112,7 +114,7 @@ $item_types = ['lost', 'found'];
 
                         <div class="flex items-center mb-4 p-2 bg-gray-50 rounded gap-2">
                             <?php if (!empty($item_data['profile_picture'])): ?>
-                                <img src="<?php echo BASE_URL . 'public/uploads/' . escape($item_data['profile_picture']); ?>" 
+                                <img src="<?php echo BASE_URL . 'uploads/' . escape($item_data['profile_picture']); ?>" 
                                      alt="User" class="w-8 h-8 rounded-full object-cover">
                             <?php else: ?>
                                 <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
@@ -142,4 +144,4 @@ $item_types = ['lost', 'found'];
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

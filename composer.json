@@ -1,5 +1,9 @@
 {
     "name": "ceetahsg/lost-and-found-system",
     "description": "A modern Lost and Found System for reuniting items with owners",
-    "type": "project"
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "ext-mysqli": "*"
+    }
 }

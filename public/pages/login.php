@@ -1,10 +1,16 @@
 <?php
-$page_title = 'Login';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../includes/functions.php';
 
 if (isLoggedIn()) {
     header('Location: ' . BASE_URL . 'pages/dashboard.php');
     exit;
+}
+
+// Read registration success flash message
+$flash_success = '';
+if (isset($_SESSION['flash_success'])) {
+    $flash_success = $_SESSION['flash_success'];
+    unset($_SESSION['flash_success']);
 }
 
 $error = '';
@@ -21,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $user = new User($conn);
             $result = $user->login($email, $password);
-            
+
             if ($result['success']) {
                 header('Location: ' . BASE_URL . 'pages/dashboard.php');
                 exit;
@@ -31,11 +37,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
+
+$page_title = 'Login';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container mx-auto px-4 py-12 max-w-md">
     <div class="bg-white rounded-lg shadow-lg p-8">
         <h1 class="text-3xl font-bold mb-6 text-center">Login</h1>
+
+        <?php if (!empty($flash_success)): ?>
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <i class="fas fa-check-circle"></i> <?php echo escape($flash_success); ?>
+            </div>
+        <?php endif; ?>
 
         <?php if (!empty($error)): ?>
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -75,4 +90,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

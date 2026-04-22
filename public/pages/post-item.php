@@ -1,10 +1,8 @@
 <?php
-$page_title = 'Post Item';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../includes/functions.php';
 requireLogin();
 
 $error = '';
-$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
@@ -26,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $item = new Item($conn);
             $result = $item->postItem($_SESSION['user_id'], $category, $item_type, $title, $description, $location, $date_lost_found, $color, $features);
-            
+
             if ($result['success']) {
                 $item_id = $result['item_id'];
 
@@ -34,13 +32,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (!empty($_FILES['image']['name'])) {
                     $upload_result = $item->uploadImage($item_id, $_FILES['image']);
                     if (!$upload_result['success']) {
-                        $error = $upload_result['message'] . ' (but item was posted)';
+                        // Item was posted but image failed — show error on dashboard
+                        header('Location: ' . BASE_URL . 'pages/dashboard.php?msg=posted&err=' . urlencode($upload_result['message']));
+                        exit;
                     }
                 }
 
-                $success = 'Item posted successfully!';
-                echo '<div class="fixed top-4 right-4 bg-green-500 text-white p-3 md:p-4 rounded-lg shadow-lg z-50 text-sm md:text-base">' . $success . '</div>';
-                header('refresh:2;url=' . BASE_URL . 'pages/dashboard.php');
+                header('Location: ' . BASE_URL . 'pages/dashboard.php?msg=posted');
+                exit;
             } else {
                 $error = $result['message'];
             }
@@ -50,6 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $categories = ['Electronics', 'Documents', 'Accessories', 'Clothing', 'Keys', 'Pets', 'Other'];
 $item_types = ['lost', 'found'];
+
+$page_title = 'Post Item';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container mx-auto px-4 py-6 md:py-12 max-w-2xl">
@@ -162,4 +164,4 @@ document.getElementById('imageInput').addEventListener('change', function(e) {
 });
 </script>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

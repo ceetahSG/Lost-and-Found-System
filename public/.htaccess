@@ -1,0 +1,28 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Route all requests through index.php if not a real file/dir
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+
+# Prevent directory listing
+Options -Indexes
+
+# Security headers
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set X-XSS-Protection "1; mode=block"
+
+# Deny access to sensitive files
+<FilesMatch "\.(env|sql|json)$">
+    Deny from all
+</FilesMatch>
+
+# Disable script execution in upload folder
+<IfModule mod_php.c>
+<Directory "uploads">
+    php_flag engine off
+    AddType text/plain .php .phtml .php3 .php4 .php5 .php6 .shtml .pl .py .jsp .asp .sh .cgi
+</Directory>
+</IfModule>

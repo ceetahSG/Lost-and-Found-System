@@ -74,8 +74,8 @@ require_once __DIR__ . '/functions.php';
                     </a>
                 </div>
             <?php else: ?>
-                <a href="<?php echo BASE_URL; ?>public/pages/login.php" class="block px-4 py-2 hover:bg-blue-700 rounded transition">Login</a>
-                <a href="<?php echo BASE_URL; ?>public/pages/register.php" class="block px-4 py-2 hover:bg-blue-700 rounded transition bg-blue-500">Register</a>
+                <a href="<?php echo BASE_URL; ?>pages/login.php" class="block px-4 py-2 hover:bg-blue-700 rounded transition">Login</a>
+                <a href="<?php echo BASE_URL; ?>pages/register.php" class="block px-4 py-2 hover:bg-blue-700 rounded transition bg-blue-500">Register</a>
             <?php endif; ?>
         </div>
     </div>

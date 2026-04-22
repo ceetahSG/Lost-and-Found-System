@@ -1,6 +1,5 @@
 <?php
-$page_title = 'Messages';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../includes/functions.php';
 requireLogin();
 
 $message = new Message($conn);
@@ -36,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_reply'])) {
             $error_msg = 'Invalid recipient';
         } else {
             $result = $message->sendMessage($_SESSION['user_id'], $receiver_id, $subject, $body);
-            
+
             if ($result['success']) {
                 $success_msg = 'Message sent successfully!';
                 // Refresh conversation
@@ -60,6 +59,9 @@ foreach ($inbox as $msg) {
 }
 
 $viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
+
+$page_title = 'Messages';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container mx-auto px-4 py-6 md:py-12">
@@ -85,7 +87,7 @@ $viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
                                class="block p-4 hover:bg-gray-50 transition <?php echo $viewing_conversation == $conv['sender_id'] ? 'bg-blue-50 border-l-4 border-blue-600' : ''; ?>">
                                 <div class="flex items-center gap-3">
                                     <?php if (!empty($conv['profile_picture'])): ?>
-                                        <img src="<?php echo BASE_URL . 'public/uploads/' . escape($conv['profile_picture']); ?>" 
+                                        <img src="<?php echo BASE_URL . 'uploads/' . escape($conv['profile_picture']); ?>" 
                                              alt="User" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
                                     <?php else: ?>
                                         <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
@@ -126,7 +128,7 @@ $viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
                     <div class="bg-blue-600 text-white px-4 md:px-6 py-3 md:py-4 border-b flex-shrink-0">
                         <div class="flex items-center gap-3">
                             <?php if (!empty($other_user_data['profile_picture'])): ?>
-                                <img src="<?php echo BASE_URL . 'public/uploads/' . escape($other_user_data['profile_picture']); ?>" 
+                                <img src="<?php echo BASE_URL . 'uploads/' . escape($other_user_data['profile_picture']); ?>" 
                                      alt="User" class="w-10 h-10 rounded-full object-cover">
                             <?php else: ?>
                                 <div class="w-10 h-10 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold text-sm">
@@ -201,4 +203,4 @@ $viewing_conversation = isset($_GET['from']) ? (int)$_GET['from'] : 0;
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

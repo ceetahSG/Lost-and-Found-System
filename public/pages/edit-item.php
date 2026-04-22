@@ -1,6 +1,5 @@
 <?php
-$page_title = 'Edit Item';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../includes/functions.php';
 requireLogin();
 
 $item_id = $_GET['id'] ?? 0;
@@ -45,6 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 $statuses = ['active', 'claimed', 'resolved'];
+
+$page_title = 'Edit Item';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container mx-auto px-4 py-12 max-w-2xl">
@@ -109,4 +111,4 @@ $statuses = ['active', 'claimed', 'resolved'];
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

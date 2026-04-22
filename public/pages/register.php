@@ -1,9 +1,7 @@
 <?php
-$page_title = 'Register';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../includes/functions.php';
 
 $error = '';
-$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
@@ -29,17 +27,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $user = new User($conn);
             $result = $user->register($username, $email, $password, $full_name);
-            
+
             if ($result['success']) {
-                $success = $result['message'];
-                echo '<div class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg">' . $success . '</div>';
-                header('refresh:2;url=' . BASE_URL . 'pages/login.php');
+                $_SESSION['flash_success'] = 'Registration successful! Please login.';
+                header('Location: ' . BASE_URL . 'pages/login.php');
+                exit;
             } else {
                 $error = $result['message'];
             }
         }
     }
 }
+
+$page_title = 'Register';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container mx-auto px-4 py-12 max-w-md">
@@ -96,4 +97,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
